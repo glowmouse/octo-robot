@@ -41,7 +41,7 @@ Time::TimeUS DataSend::execute()
   updateLEDs();
 #endif
 
-  return Time::TimeMS( 10 );  // 10 updates / second
+  return Time::TimeMS( 100 );  // 10 updates / second
 }
 
 //

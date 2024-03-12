@@ -13,7 +13,7 @@
 class WifiOstream;
 class WifiDebugOstream;
 
-using NetPipe = Util::Pipe<char, 1024>;
+using NetPipe = Util::Pipe<char, 4096>;
 
 class NetConnection: public Command::Base {
   public:
