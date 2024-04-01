@@ -18,10 +18,14 @@ Encoder::Encoder(
   hwi->WireBeginTransmission(i2cBus, I2C_ADRESS);
   hwi->WireWrite(i2cBus, _stat );
   hwi->WireEndTransmission(i2cBus);
+  (*debug) << "encoder bringup transmit\n";
   hwi->WireRequestFrom(i2cBus, I2C_ADRESS, 1);
+  (*debug) << "request made\n";
 
   while (hwi->WireAvailable(i2cBus) == 0);
+  (*debug) << "wire avail\n";
   const int stat = hwi->WireRead(i2cBus);
+  (*debug) << "read done\n";
   if ( stat & 0x20 ) {
     int strength = 1;
     if ( stat & 0x10 ) { strength = 0; } // too weak
@@ -114,10 +118,11 @@ Time::TimeUS Encoder::execute()
   position += delta_position;
   speed_accumulate += delta_position;
   ++speed_count;
+  //if (( speed_count % 1 ) == 0 && i2cBus == 1)
   if (( speed_count % 10 ) == 0 )
   {
     Time::DeviceTimeMS current = hst->msSinceDeviceStart();
-    //(*debug) << speed_accumulate << " " << ( current - speed_accumulate_start ) << "\n";
+    //(*debug) << raw_position << " " << speed_accumulate << " " << ( current - speed_accumulate_start ) << "\n";
     long long speed_tmp = speed_accumulate;
     speed_tmp = speed_tmp * 1000 / (current - speed_accumulate_start); 
     speed = speed_tmp;

@@ -5,6 +5,7 @@
 #include <memory>
 #include <ios>
 #include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
 #include "wifi_ostream.h"
 #include "wifi_secrets.h"
 #include "debug_interface.h"
@@ -101,6 +102,7 @@ class WifiInterfaceEthernet: public NetInterface {
   std::shared_ptr<WifiConnectionEthernet> defaultConnection;
 
   WiFiServer m_server{tcp_port};
+  WiFiUDP m_udp;
 };
 
 #endif

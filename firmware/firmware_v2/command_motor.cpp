@@ -28,12 +28,14 @@ Motor::Motor(
     (*debugArg) << "Scanning Bus 1 Devices...\n";
     nDevices = 0;
     for(address = 1; address < 127; address++){
+        //(*debugArg) << address << "\n";
         hwi->WireBeginTransmission(1, address);
         error = hwi->WireEndTransmission(1);
         if(error){
             (*debug) << "I2C device found at address " << address << "\n";
         }
     }
+    (*debugArg) << "Scan Done!\n";
     //Set frequency
     int freq = 1000;
     hwi->WireBeginTransmission(0, 30);

@@ -3,6 +3,7 @@
 #include "net_esp8266.h"
 #include "wifi_ostream.h"
 #include "wifi_debug_ostream.h"
+#include <WiFiUdp.h>
 
 #ifdef FOO
 WifiInterfaceEthernet::WifiInterfaceEthernet(
@@ -58,6 +59,7 @@ WifiInterfaceEthernet::WifiInterfaceEthernet(
 ) 
   : log{ logArg }
 {
+  m_udp.begin(4998 );
   defaultConnection = std::make_shared< WifiConnectionEthernet>( logArg );
   delay(10);
   (*log) << "Init Wifi\n";
@@ -94,6 +96,18 @@ Time::TimeUS WifiInterfaceEthernet::execute()
    
     defaultConnection->initConnection( m_server );
   }
+
+  int size = m_udp.parsePacket();
+  if (size) {
+    char buffer[256];
+    int len = m_udp.read(buffer, 256 );
+    (*log) << "UDB " << len << "\n";
+    m_udp.beginPacket(m_udp.remoteIP(), m_udp.remotePort());
+    m_udp.write("log big heavy wood\n");
+    m_udp.endPacket();
+  }
+
+
   return Time::TimeUS{ 10 * 1000 };
 }
 
@@ -137,6 +151,7 @@ Time::TimeUS WifiConnectionEthernet::execute()
     {
       size_t written = m_connectedClient.write( outBuf.first, outBuf.second );
       writeBuffer.readAdvance( written );
+      m_connectedClient.flush(1);
     }
   }
   }
@@ -152,5 +167,3 @@ Time::TimeUS WifiConnectionEthernet::execute()
 
   return Time::TimeUS( 1000 );
 }
-
-
