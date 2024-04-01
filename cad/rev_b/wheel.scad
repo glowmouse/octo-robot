@@ -4,6 +4,17 @@ wheel_h = 24.6;
 wheel_h = 10;
 reinforce=1;
 
+//wheel_diam = 47.3;
+//wheel_diam = 48;
+//wheel_diam = 49.25;
+//wheel_diam = 49.5;
+//wheel_diam = 55 + 9.35*2;
+//wheel_diam = 55 + 9.35;
+
+// new wheel
+wheel_diam = 36.25;
+wheel_diam = 45;
+
 d_coupler_shaft = 6;         // encoder shafe daimater.                  measured
 r_coupler_shaft = d_coupler_shaft/2;
 m_coupler_shaft_extra = .375;     // extra space for shaft hole.              estimated
@@ -71,14 +82,6 @@ module motor_coupler()
     
 }
 
-wheel_diam = 47.3;
-wheel_diam = 48;
-wheel_diam = 49.25;
-wheel_diam = 49.5;
-wheel_diam = 55 + 9.35*2;
-wheel_diam = 55 + 9.35;
-wheel_diam = 55 + 10.5;
-
 
 wheel_rim_h = 1.35;
 wheel_rim_w = 2;
@@ -133,9 +136,9 @@ module rubber_wheel()
 }
 
 //intersection() {
-plastic_wheel();
+//plastic_wheel();
 // translate([0,0,-1])
 // cylinder( r = 10, h = 50 );   
 //}
 //color([.5,.5,.5])
-//rubber_wheel();
+rubber_wheel();
