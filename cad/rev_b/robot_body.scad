@@ -1,7 +1,8 @@
 bearing_608_height = 6.8;
 epsilon = .001;
 
-
+supports = 0;
+mocks = 1;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
@@ -524,27 +525,41 @@ m_pingpong_grove = 6;
 
 module pingpong_holder_neg()
 {
+    // Void for pingpong ball
     translate([0, 0, z_pingpong_center ] )
     sphere( d = d_pingpong, $fn=100 );
+    
+    // void a cylinder at the top so the pingpong
+    // ball can be popped out
+    cylinder( d = 30, h = d_pingpong_outer/2 + epsilon );    
+    
+    // Void bottom of holder so it aligns with
+    // the bottom of the robot
     negativez_box( 
         -d_pingpong_outer/2 - epsilon, d_pingpong_outer/2+epsilon,
         -d_pingpong_outer/2 - epsilon, d_pingpong_outer/2+epsilon,
         z_pingpong_bot, z_pingpong_holder_bot );
+    
+    // Void top of the holder so the battery can
+    // slide in
     negativez_box( 
         -d_pingpong_outer/2 - epsilon, d_pingpong_outer/2+epsilon,
         -d_pingpong_outer/2 - epsilon, d_pingpong_outer/2+epsilon,
         z_pingpong_holder_top, z_pingpong_top + epsilon );    
-    rotate(45, [0, 0, 1 ])
+    
+    // Gaps so the pingpong ball can slide in
+    for( angle = [60: 60: 360])
+    rotate(angle+90, [0, 0, 1 ])
     negativez_box(
-        -d_pingpong_outer/2 - epsilon, d_pingpong_outer/2+epsilon,
+        -d_pingpong_outer/2 - epsilon, 0,
         -m_pingpong_grove/2, m_pingpong_grove/2,
         z_pingpong_bot, z_pingpong_grove );
-    rotate(45, [0, 0, 1 ])    
+
+    rotate(60*2+90, [0, 0, 1 ])
     negativez_box(
+        -d_pingpong_outer/2 - epsilon, 0,
         -m_pingpong_grove/2, m_pingpong_grove/2,
-        -d_pingpong_outer/2 - epsilon, d_pingpong_outer/2+epsilon,    
-        z_pingpong_bot, z_pingpong_grove );    
-    cylinder( d = 30, h = d_pingpong_outer/2 + epsilon );
+        z_pingpong_bot, z_pingpong_grove );
    
 }
 
@@ -563,7 +578,7 @@ module pingpong_holder_pos(wall_target)
     support_length = m_to_back_wall / cos(45);
     
     translate([ 0, 0, z_pingpong_holder_bot ] ) 
-    rotate(45, [0, 0, 1 ])
+    rotate(30, [0, 0, 1 ])
     linear_extrude( z_pingpong_holder_top - z_pingpong_holder_bot ) polygon([
         [ 0,  -assembly_wall/2 ],
         [ 0,   assembly_wall/2 ],
@@ -572,7 +587,7 @@ module pingpong_holder_pos(wall_target)
     ]);   
 
     translate([ 0, 0, z_pingpong_holder_bot ] )     
-    rotate(-45, [0, 0, 1 ])
+    rotate(-30, [0, 0, 1 ])
     linear_extrude( z_pingpong_holder_top - z_pingpong_holder_bot ) polygon([
         [ 0,  -assembly_wall/2 ],
         [ 0,   assembly_wall/2 ],
@@ -597,9 +612,10 @@ module pingpong_holder(wall_target) {
         pingpong_holder_neg();
     }
     
-//    rotate(-90,[1,0,0])    
-//    pingpong_mock();
-    
+    if (mocks) {
+        rotate(-90,[1,0,0])    
+        pingpong_mock();
+    }
 }
 
 module print_shaft() {
@@ -811,6 +827,8 @@ module level2_pos() {
     pos_box( x_circuit_rsupport_s, x_circuit_rsupport_e,
              y_circuit_support_bot, y_circuit_support_top,
              z_circuit_bot, z_circuit_top );  
+             
+    if ( supports ) {
            
     xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
@@ -889,6 +907,7 @@ module level2_pos() {
      zsupport( x_battery_start+65, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
          
+     }
          
     screw_pos( x_screw_0, z_screw_0 );
     screw_pos( x_screw_1, z_screw_0 );
@@ -1005,7 +1024,7 @@ module rng()
     }
 }
 
-rng();
+
 
 
 module double_holder() {
@@ -1014,6 +1033,17 @@ module double_holder() {
     mirror([0,0,1])
     translate([0, 0, epsilon ] )     
     holder_at_0();   
+}
+
+module gear_with_motor()
+{
+    color([1,0,0])
+    union() {
+        import("gear_with_motor.stl", convexity=3);
+        translate([0,20,0])
+        rotate(90,[1,0,0])
+        cylinder( r = 3, h = 40 );
+    }
 }
 
 module holder_and_ball() {
@@ -1027,9 +1057,30 @@ module holder_and_ball() {
     level2();
 }
 
+module shaft_mock() {
+    shaft();
+    cap();    
+}
+
 //pingpong_holder(40);
-holder_and_ball();
-//shaft();
+rotate(90,[1,0,0]) {
+union() {    
+    holder_and_ball();
+    rng();
+    translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
+    shaft_mock();
+    rotate(180,[0,1,0])
+    translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
+    shaft_mock();    
+}
+}
+
+translate([0,-88,0])
+gear_with_motor();
+
+translate([0, 88,0])
+gear_with_motor();
+
 //battery_mock();
 //cap();
 
