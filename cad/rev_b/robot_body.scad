@@ -2,7 +2,9 @@ bearing_608_height = 6.8;
 epsilon = .001;
 
 supports = 0;
-mocks = 1;
+mocks = 0;
+shaft_mock = 0;
+robot_top = 0;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
@@ -91,11 +93,12 @@ z_as5600_platform_start = z_upper_start + bearing_608_height * 1.5;
 z_as5600_platform_holder = z_as5600_platform_start + 5;
 z_as5600_platform_indent    = z_as5600_platform_holder -2;
 z_as5600_platform_eindent = z_as5600_platform_indent - 2;
+z_assembly_end = z_as5600_platform_holder + 25;
 
-//m_gap_between_motor_assemblies = 40;
-m_gap_between_motor_assemblies = 50; // 1cm extra for electronics
+echo(["spoon", z_as5600_platform_holder ] );
+
 z_as5600_assembly_start = z_as5600_platform_holder;
-z_as5600_assembly_end   = z_as5600_assembly_start + m_gap_between_motor_assemblies / 2;
+z_as5600_assembly_end   = z_assembly_end;
 m_nut_trap_width = 2.7;
 
 //z_shaft_end = z_as5600_platform_indent - 3;
@@ -287,6 +290,17 @@ module negativez_box( x0, x1, y0, y1, z0, z1 ) {
     }
 }
 
+module negativex_box( x0, x1, y0, y1, z0, z1 ) {
+    translate([0, 0, z0 ] ) {
+        linear_extrude( z1-z0 ) polygon([
+            [ x0 - epsilon, y0 ],
+            [ x1, y0 ],
+            [ x1, y1 ],
+            [ x0 - epsilon, y1 ]
+        ]);
+    }
+}
+
 module shaft_neg() {
   //  translate([0, 0, z_upper_start ])    
  //   cylinder( d = d_motor_coupler_inner_wall, h = z_shaft_end - //z_upper_start + epsilon, $fn=25 );
@@ -440,15 +454,16 @@ module holder_pos() {
         [ x_right_corner, y_up_corner ],
         [ x_right_corner, y_down_corner ]
     ] );
-    translate([0, 0, z_motor_level ] )
-    linear_extrude( z_upper_start - z_motor_level ) polygon( [
+    // z_lower_shaft_end
+    translate([0, 0, z_lower_shaft_end ] )
+    linear_extrude( z_upper_start - z_lower_shaft_end ) polygon( [
         [ x_right_support_edge, y_down_corner ],
         [ x_right_support_edge, y_up_corner ],
         [ x_right_corner, y_up_corner ],
         [ x_right_corner, y_down_corner ]
     ] );    
-    translate([0, 0, z_motor_level ] )
-    linear_extrude( z_upper_start - z_motor_level ) polygon( [
+    translate([0, 0, z_lower_shaft_end ] )
+    linear_extrude( z_upper_start - z_lower_shaft_end ) polygon( [
         [ x_left_support, y_down_corner ],
         [ x_left_support, y_up_corner ],
         [ x_left_corner, y_up_corner ],
@@ -593,8 +608,8 @@ module pingpong_holder_pos(wall_target)
     linear_extrude( z_pingpong_holder_top - z_pingpong_holder_bot ) polygon([
         [ 0,  -assembly_wall/2 ],
         [ 0,   assembly_wall/2 ],
-        [ support_length - assembly_wall/2,  assembly_wall/2 ],
-        [ support_length + assembly_wall/2, -assembly_wall/2 ] 
+        [ support_length - assembly_wall/2 * cos(holder_tri_angle),  assembly_wall/2 * sin(holder_tri_angle) ],
+        [ support_length + assembly_wall/2 * cos(holder_tri_angle), -assembly_wall/2 * sin(holder_tri_angle) ] 
     ]);       
 }
 
@@ -1040,6 +1055,8 @@ module double_holder() {
 module gear_with_motor()
 {
     color([1,0,0])
+    rotate(180,[0,0,1])
+    rotate(180,[1,0,0])
     union() {
         import("gear_with_motor.stl", convexity=3);
         translate([0,20,0])
@@ -1055,8 +1072,10 @@ module holder_and_ball() {
  //   translate([m_to_back, 0, 0 ])
   //  rotate(180,[0,1,0])
   //  pingpong_holder( x_right_corner - epsilon );    
-    translate([-44,0,0])
-    level2();
+    if ( robot_top ) {
+        translate([-44,0,0])
+        level2();
+    }
 }
 
 module shaft_mock() {
@@ -1069,19 +1088,82 @@ rotate(90,[1,0,0]) {
 union() {    
     holder_and_ball();
     rng();
-    translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
-    shaft_mock();
-    rotate(180,[0,1,0])
-    translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
-    shaft_mock();    
+    if ( shaft_mock ) {
+        translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
+        shaft_mock();
+        rotate(180,[0,1,0])
+        translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
+        shaft_mock();    
+    }
 }
 }
 
-translate([0,-88,0])
-gear_with_motor();
+x_motor_shaft = -80;
+y_motor_center = z_assembly_end - z_lower_shaft_end - 9;
+y_motor_end = y_motor_center - 9;
+y_motor_start = -y_motor_end;
+x_front_holes = x_motor_shaft + m_shaft_to_back_holes;
+x_l_motor_support = x_front_holes - assembly_wall;
+x_r_motor_support = x_front_holes + assembly_wall;
 
-translate([0, 88,0])
-gear_with_motor();
+z_hole_down = - m_shaft_duel_hole_gap / 2;
+z_hole_up   = + m_shaft_duel_hole_gap / 2;
+z_motor_sup_down = z_hole_down - m_extra_corner;
+z_motor_sup_up  = z_hole_up + m_extra_corner+2;
+
+module motor_support_pos() {
+    translate([0,0, z_motor_sup_down ] ) {
+        linear_extrude( z_motor_sup_up - z_motor_sup_down ) polygon([
+            [ x_l_motor_support, y_motor_start ],
+            [ x_r_motor_support, y_motor_start ],
+            [ x_r_motor_support, y_motor_end ],
+            [ x_l_motor_support, y_motor_end ]]);
+    }
+}
+
+module x_cylinder( rad, height, fn ) {
+    rotate( -90,[1,0,0]){
+        cylinder( r = rad, h = height, $fn = fn );
+    }
+}
+
+
+module x_nut_trap( x, y, z ) {
+    translate([ x, y, z ] )
+    x_cylinder( m_trap_m3/2, z_trap_up - z_trap_down, 6 );
+    negativez_box( x-10,  x,
+                   y, y + z_trap_up - z_trap_down,
+                   z - m_nut_m3/2, z + m_nut_m3/2 );    
+}
+
+module motor_support_neg() {
+    translate([ x_front_holes, y_motor_start - epsilon, z_hole_down ] )
+    x_cylinder( d_m3/2, y_motor_end - y_motor_start + epsilon*2, 20 );
+    translate([ x_front_holes, y_motor_start - epsilon, z_hole_up ] )
+    x_cylinder( d_m3/2, y_motor_end - y_motor_start + epsilon*2, 20 );
+    
+    x_nut_trap( x_front_holes, y_motor_start + 10, z_hole_up );
+    x_nut_trap( x_front_holes, y_motor_start + 10, z_hole_down );
+    x_nut_trap( x_front_holes, y_motor_end - 10 - (z_trap_up - z_trap_down), z_hole_up );
+    x_nut_trap( x_front_holes, y_motor_end - 10- (z_trap_up - z_trap_down), z_hole_down );
+}
+
+module motor_support() {
+    difference() {
+        motor_support_pos();
+        motor_support_neg();
+    }
+}
+
+motor_support();
+
+if ( mocks ) {
+    translate([x_motor_shaft, -y_motor_center, 0])
+    gear_with_motor();
+
+    translate([x_motor_shaft, y_motor_center,0])
+    gear_with_motor();
+}
 
 //battery_mock();
 //cap();
