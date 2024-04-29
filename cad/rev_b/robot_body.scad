@@ -574,16 +574,18 @@ module pingpong_holder_pos(wall_target)
     translate([0, 0, z_pingpong_grove] )
     cylinder( r = r_support, h = z_pingpong_top - z_pingpong_grove, $fn=100 );
     
+    holder_tri_angle = 60;
+    
     m_to_back_wall = m_to_back - wall_target;
-    support_length = m_to_back_wall / cos(45);
+    support_length = m_to_back_wall / sin(holder_tri_angle);
     
     translate([ 0, 0, z_pingpong_holder_bot ] ) 
-    rotate(30, [0, 0, 1 ])
+    rotate(holder_tri_angle/2, [0, 0, 1 ])
     linear_extrude( z_pingpong_holder_top - z_pingpong_holder_bot ) polygon([
         [ 0,  -assembly_wall/2 ],
         [ 0,   assembly_wall/2 ],
-        [ support_length + assembly_wall/2,  assembly_wall/2 ],
-        [ support_length - assembly_wall/2, -assembly_wall/2 ] 
+        [ support_length + assembly_wall/2*cos(holder_tri_angle),  assembly_wall/2 * sin(holder_tri_angle) ],
+        [ support_length - assembly_wall/2*cos(holder_tri_angle), -assembly_wall/2 * sin(holder_tri_angle) ] 
     ]);   
 
     translate([ 0, 0, z_pingpong_holder_bot ] )     
