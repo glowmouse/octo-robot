@@ -578,8 +578,9 @@ module pingpong_holder_neg()
    
 }
 
-m_to_center = z_as5600_assembly_end-15;
-m_to_back = m_to_center * 2 / sqrt(2);
+holder_tri_angle = 45;
+m_to_center = z_as5600_assembly_end-35.5;
+m_to_back = m_to_center / tan(holder_tri_angle/2);
 
 module pingpong_holder_pos(wall_target)
 {
@@ -589,27 +590,25 @@ module pingpong_holder_pos(wall_target)
     translate([0, 0, z_pingpong_grove] )
     cylinder( r = r_support, h = z_pingpong_top - z_pingpong_grove, $fn=100 );
     
-    holder_tri_angle = 60;
-    
     m_to_back_wall = m_to_back - wall_target;
-    support_length = m_to_back_wall / sin(holder_tri_angle);
+    support_length = m_to_back_wall / cos(holder_tri_angle/2);
     
     translate([ 0, 0, z_pingpong_holder_bot ] ) 
     rotate(holder_tri_angle/2, [0, 0, 1 ])
     linear_extrude( z_pingpong_holder_top - z_pingpong_holder_bot ) polygon([
         [ 0,  -assembly_wall/2 ],
         [ 0,   assembly_wall/2 ],
-        [ support_length + assembly_wall/2*cos(holder_tri_angle),  assembly_wall/2 * sin(holder_tri_angle) ],
-        [ support_length - assembly_wall/2*cos(holder_tri_angle), -assembly_wall/2 * sin(holder_tri_angle) ] 
+        [ support_length + assembly_wall/2*sin(holder_tri_angle/2),  assembly_wall/2 * cos(holder_tri_angle/2) ],
+        [ support_length - assembly_wall/2*sin(holder_tri_angle/2), -assembly_wall/2 * cos(holder_tri_angle/2) ] 
     ]);   
 
     translate([ 0, 0, z_pingpong_holder_bot ] )     
-    rotate(-30, [0, 0, 1 ])
+    rotate(-holder_tri_angle/2, [0, 0, 1 ])
     linear_extrude( z_pingpong_holder_top - z_pingpong_holder_bot ) polygon([
         [ 0,  -assembly_wall/2 ],
         [ 0,   assembly_wall/2 ],
-        [ support_length - assembly_wall/2 * cos(holder_tri_angle),  assembly_wall/2 * sin(holder_tri_angle) ],
-        [ support_length + assembly_wall/2 * cos(holder_tri_angle), -assembly_wall/2 * sin(holder_tri_angle) ] 
+        [ support_length - assembly_wall/2 * sin(holder_tri_angle/2),  assembly_wall/2 * cos(holder_tri_angle/2) ],
+        [ support_length + assembly_wall/2 * sin(holder_tri_angle/2), -assembly_wall/2 * cos(holder_tri_angle/2) ] 
     ]);       
 }
 
@@ -1055,7 +1054,7 @@ module double_holder() {
 module gear_with_motor()
 {
     color([1,0,0])
-    rotate(180,[0,0,1])
+   // rotate(180,[0,0,1])
     rotate(180,[1,0,0])
     union() {
         import("gear_with_motor.stl", convexity=3);
@@ -1063,6 +1062,12 @@ module gear_with_motor()
         rotate(90,[1,0,0])
         cylinder( r = 3, h = 40 );
     }
+}
+
+module ball_neg() {
+  //  rotate(90,[1,0,0])
+    translate([-m_to_back, 0, 0 ])
+    pingpong_holder_neg( );
 }
 
 module holder_and_ball() {
@@ -1098,11 +1103,14 @@ union() {
 }
 }
 
-x_motor_shaft = -80;
+// gear = 15mm rad max
+// max = 94mm diam
+
+x_motor_shaft = -60;
 y_motor_center = z_assembly_end - z_lower_shaft_end - 9;
 y_motor_end = y_motor_center - 9;
 y_motor_start = -y_motor_end;
-x_front_holes = x_motor_shaft + m_shaft_to_back_holes;
+x_front_holes = x_motor_shaft - m_shaft_to_back_holes;
 x_l_motor_support = x_front_holes - assembly_wall;
 x_r_motor_support = x_front_holes + assembly_wall;
 
@@ -1142,10 +1150,11 @@ module motor_support_neg() {
     translate([ x_front_holes, y_motor_start - epsilon, z_hole_up ] )
     x_cylinder( d_m3/2, y_motor_end - y_motor_start + epsilon*2, 20 );
     
-    x_nut_trap( x_front_holes, y_motor_start + 10, z_hole_up );
-    x_nut_trap( x_front_holes, y_motor_start + 10, z_hole_down );
-    x_nut_trap( x_front_holes, y_motor_end - 10 - (z_trap_up - z_trap_down), z_hole_up );
-    x_nut_trap( x_front_holes, y_motor_end - 10- (z_trap_up - z_trap_down), z_hole_down );
+    x_nut_trap( x_front_holes, y_motor_start + 5, z_hole_up );
+    x_nut_trap( x_front_holes, y_motor_start + 5, z_hole_down );
+    x_nut_trap( x_front_holes, y_motor_end - 5 - (z_trap_up - z_trap_down), z_hole_up );
+    x_nut_trap( x_front_holes, y_motor_end - 5- (z_trap_up - z_trap_down), z_hole_down );;
+        ball_neg();    
 }
 
 module motor_support() {
