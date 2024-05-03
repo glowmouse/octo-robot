@@ -2,15 +2,16 @@ bearing_608_height = 6.8;
 epsilon = .001;
 
 supports = 0;
-mocks = 0;
+mocks = 1;
 shaft_mock = 0;
 robot_top = 0;
+robot_bot = 1;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
 m_axial_magnet_width = 3;
 d_motor_shaft = 5.3;
-d_shaft = 8.2;
+d_shaft = 8.1;
 d_m3 = 3.5;
 d_bearing_608 = 22.5;
 m_shaft_to_back_holes = 31.8  - 11.2;
@@ -31,7 +32,7 @@ m_extra_corner = 4;
 m_bearing_holder_gap = 5;
 m_as5600_gap = .3;
 
-x_left_hole = x_shaft_center - m_shaft_to_back_holes;
+x_left_hole = x_shaft_center - m_shaft_to_front_hole;
 x_right_hole = x_shaft_center + m_shaft_to_front_hole;
 x_right_bearing_edge = x_shaft_center + d_bearing_608/2;
 x_right_support_edge = x_right_bearing_edge - m_extra_corner;
@@ -80,11 +81,10 @@ y_as5600_platform_up = y_up_corner;
 y_as5600_platform_down = y_down_corner;
 
 z_motor_level = 0;
-z_cap_bot = z_motor_level + 2;
+z_cap_bot = z_motor_level + 0;
 z_toy_motor_shaft_top = z_motor_level + 10;
-z_shaft_start = z_toy_motor_shaft_top + 3;
-//z_lower_shaft_end = z_shaft_start+4;
-z_lower_shaft_end = z_motor_level + 20;
+z_shaft_start = z_motor_level;
+z_lower_shaft_end = z_motor_level + 22;
 z_upper_start = z_lower_shaft_end + bearing_608_height * 2 + m_bearing_holder_gap;
 //z_shaft_end = z_lower_shaft_end + 5;
 
@@ -121,7 +121,8 @@ d_lower_shaft = d_shaft - thread_width*2;
 d_upper_holder = 10;
 d_shaft_hole = 12.5;
 
-d_cap_lower_shaft = d_lower_shaft + 1 + thread_width*2;
+thread_gap = .75;
+d_cap_lower_shaft = d_lower_shaft + thread_gap + thread_width*2;
 
 // @brief Create a hollow cylinder (ring)
 //
@@ -324,7 +325,7 @@ module shaft_pos() {
     cylinder( d = d_shaft, h = z_shaft_end - z_lower_shaft_end, $fn=25 );    
     
     translate( [0, 0, z_shaft_start ] )
-        thread( thread_width, 3, d_lower_shaft/2, z_lower_shaft_end - z_shaft_start, 8 );
+        thread( thread_width, 3, d_lower_shaft/2, z_lower_shaft_end - z_shaft_start, 12 );
 }
 
 module shaft() {
@@ -345,7 +346,7 @@ module cap_pos() {
         wall = ( d_upper_holder - d_cap_lower_shaft )/2;
         translate([0,0,z_shaft_start])
         ring_fn( z_lower_shaft_end - z_shaft_start, d_cap_lower_shaft+.1, wall, 25 );
-        thread( thread_width, 3, d_cap_lower_shaft/2, z_lower_shaft_end, 8 );
+        thread( thread_width, 3, d_cap_lower_shaft/2, z_lower_shaft_end, 12 );
     } 
     }
 
@@ -578,8 +579,9 @@ module pingpong_holder_neg()
    
 }
 
-holder_tri_angle = 45;
-m_to_center = z_as5600_assembly_end-35.5;
+holder_tri_angle = 40;
+m_to_center = 31;
+echo(["m_to_center", m_to_center]);
 m_to_back = m_to_center / tan(holder_tri_angle/2);
 
 module pingpong_holder_pos(wall_target)
@@ -1088,25 +1090,12 @@ module shaft_mock() {
     cap();    
 }
 
-//pingpong_holder(40);
-rotate(90,[1,0,0]) {
-union() {    
-    holder_and_ball();
-    rng();
-    if ( shaft_mock ) {
-        translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
-        shaft_mock();
-        rotate(180,[0,1,0])
-        translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
-        shaft_mock();    
-    }
-}
-}
+
 
 // gear = 15mm rad max
 // max = 94mm diam
 
-x_motor_shaft = -60;
+x_motor_shaft = -40;
 y_motor_center = z_assembly_end - z_lower_shaft_end - 9;
 y_motor_end = y_motor_center - 9;
 y_motor_start = -y_motor_end;
@@ -1164,7 +1153,188 @@ module motor_support() {
     }
 }
 
-motor_support();
+module lower_body() {
+    motor_support();
+    //pingpong_holder(40);
+    rotate(90,[1,0,0]) {
+        union() {    
+            holder_and_ball();
+            rng();
+            if ( shaft_mock ) {
+                translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
+                shaft_mock();
+                rotate(180,[0,1,0])
+                translate([0, 0, -z_as5600_assembly_end - epsilon ] )    
+                shaft_mock();    
+            }
+        }
+    }
+}
+
+wheel_h = 10;
+reinforce=1;
+
+//wheel_diam = 47.3;
+//wheel_diam = 48;
+//wheel_diam = 49.25;
+//wheel_diam = 49.5;
+//wheel_diam = 55 + 9.35*2;
+//wheel_diam = 55 + 9.35;
+
+// new wheel
+//wheel_diam = 36.25;
+wheel_diam = 45;
+
+d_coupler_shaft = 6;         // encoder shafe daimater.                  measured
+r_coupler_shaft = d_coupler_shaft/2;
+m_coupler_shaft_extra = .375;     // extra space for shaft hole.              estimated
+m_coupler_side_extra_gap = 1.1;
+to_flat_bit = 4.45;     // distance from edge to flat bit on shaft  measured
+coupler_outer_wall = 2; // amount of meaterial around the shaft. 
+epsilon=0.001;
+
+d_motor_shaft = 5.3;
+d_motor_shaft_extra = .375;
+d_motor_coupler_inner_wall = d_motor_shaft + d_motor_shaft_extra;
+r_motor_coupler_inner_wall = d_motor_coupler_inner_wall / 2;
+//z_motor_coupler_height = wheel_h + 6.5 + reinforce;
+z_motor_coupler_height = wheel_h + 10 + reinforce;
+//x_motor_coupler_flat_edge = 2.5;
+//x_motor_coupler_flat_edge = 2.25;  // samples
+//x_motor_coupler_flat_edge = 2.15;  // viable
+//x_motor_coupler_flat_edge = 2.05;  // viable
+//x_motor_coupler_flat_edge = 1.95;  // viable
+x_motor_coupler_flat_edge = 1.85;  // viable
+
+z_shaft_height = 13;    // measured
+
+d_coupler_inner_wall = d_coupler_shaft + m_coupler_shaft_extra;
+r_coupler_inner_wall = d_coupler_inner_wall / 2;
+x_coupler_flat_edge = -r_coupler_shaft + to_flat_bit + m_coupler_side_extra_gap;
+
+
+
+module ring( depth, inner_diam, wall ) {
+    rotate_extrude($fn=75) polygon( points=[
+        [inner_diam/2, 0 ],
+        [inner_diam/2, depth],
+        [inner_diam/2+wall, depth ],
+        [inner_diam/2+wall, 0 ]]);
+}
+
+module encoder_coupler()
+{
+    ring( z_shaft_height, d_coupler_inner_wall, coupler_outer_wall );
+    linear_extrude( height = z_shaft_height ) polygon( points=[
+        [ x_coupler_flat_edge, -r_coupler_inner_wall ],
+        [ x_coupler_flat_edge,  r_coupler_inner_wall ],
+        [ r_coupler_inner_wall,                 r_coupler_inner_wall ],
+        [ r_coupler_inner_wall,                -r_coupler_inner_wall ]    
+    ]);
+}
+
+module motor_coupler()
+{
+    ring( z_motor_coupler_height, d_motor_coupler_inner_wall, coupler_outer_wall );    
+
+    linear_extrude( height = z_motor_coupler_height ) polygon( points=[
+        [ x_motor_coupler_flat_edge, -r_motor_coupler_inner_wall ],
+        [ x_motor_coupler_flat_edge,  r_motor_coupler_inner_wall ],
+        [ r_motor_coupler_inner_wall,                 r_coupler_inner_wall ],
+        [ r_motor_coupler_inner_wall,                -r_coupler_inner_wall ]    
+    ]);    
+    linear_extrude( height = z_motor_coupler_height ) polygon( points=[
+        [ -x_motor_coupler_flat_edge, -r_motor_coupler_inner_wall ],
+        [ -x_motor_coupler_flat_edge,  r_motor_coupler_inner_wall ],
+        [ -r_motor_coupler_inner_wall,                 r_coupler_inner_wall ],
+        [ -r_motor_coupler_inner_wall,                -r_coupler_inner_wall ]    
+    ]);    
+    
+}
+
+
+wheel_rim_h = 1.35;
+wheel_rim_w = 2;
+
+wheel_wall=2;
+
+include <wheel_gear.scad>
+
+module style_pulley() {
+    intersection() {
+    wheel_pulley();   
+ring( wheel_h + reinforce+8, wheel_diam - wheel_wall*2, wheel_wall );  
+    }
+for( zup = [ 0 : .15 : 1 ] ) {
+translate([0,0,19 + zup])
+ring( .2, wheel_diam-4, 2+wheel_rim_w * (zup + .2) / 1.2 );
+}    
+}
+
+module plastic_wheel()
+{
+    style_pulley();
+       cap();
+ring( wheel_h + reinforce, wheel_diam - wheel_wall*2, wheel_wall );
+ring( wheel_rim_h, wheel_diam, wheel_rim_w );
+for( zup = [ 0 : .15 : 1 ] ) {
+translate([0,0,wheel_h-wheel_rim_h + zup])
+ring( .2, wheel_diam, wheel_rim_w * (zup + .2) / 1.2 );
+}
+translate([0,0,wheel_h-wheel_rim_h+1])
+ring( wheel_rim_h-1+reinforce, wheel_diam, wheel_rim_w );
+//motor_coupler();
+
+for( angle = [ 0 : 60 : 360 ] )
+{
+    rotate( angle, [0, 0, 1 ] ) {
+      linear_extrude( height = wheel_h ) polygon( points=[
+        [ d_motor_coupler_inner_wall/2+2, -1 ],
+        [ wheel_diam/2-1, -1 ],
+        [ wheel_diam/2-1, 1 ],
+        [ d_motor_coupler_inner_wall/2+2, 1 ] ]
+        );          
+    }
+}
+}
+
+module rubber_wheel_pos()
+{
+    zbot = wheel_rim_h;
+    ztop = wheel_h-wheel_rim_h+1-.2;
+    zdiff = ztop - zbot;
+    
+    for ( z = [ zbot : .2 : ztop ] ) {
+        range = ( z - zbot ) / zdiff;
+        extra = sin( range * 180 ) * 2;
+        translate( [0, 0, z ] )
+        ring( .2, wheel_diam + extra*2, 2  );         
+    }
+}
+
+module rubber_wheel()
+{
+    difference() {
+        rubber_wheel_pos();
+        plastic_wheel();
+    }
+}
+
+//intersection() {
+//plastic_wheel();
+// translate([0,0,-1])
+// cylinder( r = 10, h = 50 );   
+//}
+//color([.5,.5,.5])
+//rubber_wheel();
+
+
+if ( robot_bot ) {
+    lower_body();
+}
+
+//shaft();
+//plastic_wheel();
 
 if ( mocks ) {
     translate([x_motor_shaft, -y_motor_center, 0])
