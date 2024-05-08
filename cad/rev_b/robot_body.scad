@@ -2,16 +2,16 @@ bearing_608_height = 6.8;
 epsilon = .001;
 
 supports = 0;
-mocks = 1;
+mocks = 0;
 shaft_mock = 0;
 robot_top = 0;
-robot_bot = 1;
+robot_bot = 0;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
 m_axial_magnet_width = 3;
 d_motor_shaft = 5.3;
-d_shaft = 8.1;
+d_shaft = 8.15;
 d_m3 = 3.5;
 d_bearing_608 = 22.5;
 m_shaft_to_back_holes = 31.8  - 11.2;
@@ -85,7 +85,9 @@ z_cap_bot = z_motor_level + 0;
 z_toy_motor_shaft_top = z_motor_level + 10;
 z_shaft_start = z_motor_level;
 z_lower_shaft_end = z_motor_level + 22;
+z_real_shaft_end = z_lower_shaft_end - 1.0;
 z_upper_start = z_lower_shaft_end + bearing_608_height * 2 + m_bearing_holder_gap;
+
 //z_shaft_end = z_lower_shaft_end + 5;
 
 z_near_bearing_end = z_lower_shaft_end + bearing_608_height;
@@ -118,6 +120,7 @@ d_motor_shaft_extra = .375;
 d_motor_coupler_inner_wall = d_motor_shaft + d_motor_shaft_extra;
 
 d_lower_shaft = d_shaft - thread_width*2;
+d_lower_shaft = d_shaft - thread_width*2+.25;
 d_upper_holder = 10;
 d_shaft_hole = 12.5;
 
@@ -321,11 +324,11 @@ module shaft_pos() {
     //ring_fn( z_shaft_end - z_shaft_start, d_motor_coupler_inner_wall, coupler_outer_wall, 25 );
     translate([0, 0, z_upper_start ])
     cylinder( d = d_upper_holder, h = z_shaft_end - z_upper_start, $fn=25 );
-    translate([0, 0, z_lower_shaft_end ])
-    cylinder( d = d_shaft, h = z_shaft_end - z_lower_shaft_end, $fn=25 );    
+    translate([0, 0, z_real_shaft_end ])
+    cylinder( d = d_shaft, h = z_shaft_end - z_real_shaft_end, $fn=25 );    
     
     translate( [0, 0, z_shaft_start ] )
-        thread( thread_width, 3, d_lower_shaft/2, z_lower_shaft_end - z_shaft_start, 12 );
+        thread( thread_width, 3, d_lower_shaft/2, z_real_shaft_end - z_shaft_start, 12 );
 }
 
 module shaft() {
@@ -1333,7 +1336,8 @@ if ( robot_bot ) {
     lower_body();
 }
 
-//shaft();
+shaft();
+//translate([35,0,0])
 //plastic_wheel();
 
 if ( mocks ) {
