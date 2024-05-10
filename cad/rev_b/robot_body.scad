@@ -6,12 +6,15 @@ mocks = 0;
 shaft_mock = 0;
 robot_top = 0;
 robot_bot = 0;
+magnet_shaft = 0;
+wheel = 0;
+motor_gear = 1;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
 m_axial_magnet_width = 3;
 d_motor_shaft = 5.3;
-d_shaft = 8.15;
+d_shaft = 8.10;
 d_m3 = 3.5;
 d_bearing_608 = 22.5;
 m_shaft_to_back_holes = 31.8  - 11.2;
@@ -119,7 +122,7 @@ thread_width = 2;
 d_motor_shaft_extra = .375;
 d_motor_coupler_inner_wall = d_motor_shaft + d_motor_shaft_extra;
 
-d_lower_shaft = d_shaft - thread_width*2;
+//d_lower_shaft = d_shaft - thread_width*2;
 d_lower_shaft = d_shaft - thread_width*2+.25;
 d_upper_holder = 10;
 d_shaft_hole = 12.5;
@@ -1194,11 +1197,7 @@ m_coupler_shaft_extra = .375;     // extra space for shaft hole.              es
 m_coupler_side_extra_gap = 1.1;
 to_flat_bit = 4.45;     // distance from edge to flat bit on shaft  measured
 coupler_outer_wall = 2; // amount of meaterial around the shaft. 
-epsilon=0.001;
 
-d_motor_shaft = 5.3;
-d_motor_shaft_extra = .375;
-d_motor_coupler_inner_wall = d_motor_shaft + d_motor_shaft_extra;
 r_motor_coupler_inner_wall = d_motor_coupler_inner_wall / 2;
 //z_motor_coupler_height = wheel_h + 6.5 + reinforce;
 z_motor_coupler_height = wheel_h + 10 + reinforce;
@@ -1264,12 +1263,13 @@ wheel_wall=2;
 include <wheel_gear.scad>
 
 module style_pulley() {
+        ring( wheel_rim_h, wheel_diam-4, wheel_rim_w+2 );
     intersection() {
     wheel_pulley();   
-ring( wheel_h + reinforce+8, wheel_diam - wheel_wall*2, wheel_wall );  
+ring( wheel_h + reinforce+6, wheel_diam - wheel_wall*2, wheel_wall+10 );  
     }
 for( zup = [ 0 : .15 : 1 ] ) {
-translate([0,0,19 + zup])
+translate([0,0,9 + zup])
 ring( .2, wheel_diam-4, 2+wheel_rim_w * (zup + .2) / 1.2 );
 }    
 }
@@ -1277,21 +1277,24 @@ ring( .2, wheel_diam-4, 2+wheel_rim_w * (zup + .2) / 1.2 );
 module plastic_wheel()
 {
     style_pulley();
-       cap();
-ring( wheel_h + reinforce, wheel_diam - wheel_wall*2, wheel_wall );
-ring( wheel_rim_h, wheel_diam, wheel_rim_w );
-for( zup = [ 0 : .15 : 1 ] ) {
-translate([0,0,wheel_h-wheel_rim_h + zup])
-ring( .2, wheel_diam, wheel_rim_w * (zup + .2) / 1.2 );
-}
-translate([0,0,wheel_h-wheel_rim_h+1])
-ring( wheel_rim_h-1+reinforce, wheel_diam, wheel_rim_w );
+    cap();
+    translate([0,0,10])
+    union() {   
+        ring( wheel_h + reinforce, wheel_diam - wheel_wall*2, wheel_wall );
+        ring( wheel_rim_h, wheel_diam, wheel_rim_w );
+        for( zup = [ 0 : .15 : 1 ] ) {
+            translate([0,0,wheel_h-wheel_rim_h + zup])
+            ring( .2, wheel_diam, wheel_rim_w * (zup + .2) / 1.2 );
+        }
+        translate([0,0,wheel_h-wheel_rim_h+1])
+        ring( wheel_rim_h-1+reinforce, wheel_diam, wheel_rim_w );
 //motor_coupler();
+    }
 
 for( angle = [ 0 : 60 : 360 ] )
 {
     rotate( angle, [0, 0, 1 ] ) {
-      linear_extrude( height = wheel_h ) polygon( points=[
+      linear_extrude( height = wheel_h*2 ) polygon( points=[
         [ d_motor_coupler_inner_wall/2+2, -1 ],
         [ wheel_diam/2-1, -1 ],
         [ wheel_diam/2-1, 1 ],
@@ -1336,9 +1339,19 @@ if ( robot_bot ) {
     lower_body();
 }
 
-shaft();
+if ( magnet_shaft ) {
+    rotate(180,[1,0,0])
+    shaft();
+}
 //translate([35,0,0])
-//plastic_wheel();
+
+if ( wheel ) {
+    plastic_wheel();
+}
+
+if ( motor_gear ) {
+    motor_pulley();
+}
 
 if ( mocks ) {
     translate([x_motor_shaft, -y_motor_center, 0])
