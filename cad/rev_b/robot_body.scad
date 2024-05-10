@@ -5,10 +5,10 @@ supports = 0;
 mocks = 0;
 shaft_mock = 0;
 robot_top = 0;
-robot_bot = 0;
+robot_bot = 1;
 magnet_shaft = 0;
 wheel = 0;
-motor_gear = 1;
+motor_gear = 0;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
@@ -712,6 +712,7 @@ m_circuit_board_width = 60;
 circuit_screw_width = 51.08;
 circuit_screw_length = 82.485;
 circuit_support_offset = 13;
+circuit_support_offset_2 = 13;
 
 circuit_support_width = (m_circuit_board_width - circuit_screw_width );
 
@@ -719,15 +720,15 @@ y_circuit_support_bot = y_battery_end;
 y_circuit_support_top = y_circuit_support_bot + 5;
 y_circuit_mount_top = y_circuit_support_top + 3;
 
-x_circuit_lsupport_s = -m_circuit_board_width/2 + circuit_support_offset;
+x_circuit_lsupport_s = -45;
 x_circuit_lsupport_e = x_circuit_lsupport_s + circuit_support_width;
 x_circuit_rsupport_e = m_circuit_board_width/2 + circuit_support_offset;
 x_circuit_rsupport_s = x_circuit_rsupport_e - circuit_support_width;
 
 z_screw_0 = -circuit_screw_length/2;
 z_screw_1 =  circuit_screw_length/2;
-x_screw_0 = -circuit_screw_width/2 + circuit_support_offset;
-x_screw_1 =  circuit_screw_width/2 + circuit_support_offset;
+x_screw_0 = -circuit_screw_width/2 + circuit_support_offset_2;
+x_screw_1 =  circuit_screw_width/2 + circuit_support_offset_2;
 
 m_led_gap  = 1.5;
 m_led_wall = 3;
@@ -856,19 +857,19 @@ module level2_pos() {
            
     xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
-             -20);
+             -25);
     xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
-             -10);
+             -12);
      xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
              0);                        
      xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
-             10);  
+             12);  
      xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
-             20);                            
+             25);                            
 
      xsupport( x_circuit_rsupport_s, x_circuit_rsupport_e,
              y_circuit_support_bot,
@@ -888,10 +889,10 @@ module level2_pos() {
 
 
 
-     zsupport( x_battery_start+30, y_battery_start,
+     zsupport( x_battery_start+28, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+30, y_battery_start,
+     zsupport( x_battery_start+28, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
      zsupport( x_battery_start+20, y_battery_start,
@@ -906,29 +907,35 @@ module level2_pos() {
      zsupport( x_battery_start+10, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
-     zsupport( x_battery_start+0, y_battery_start,
+     zsupport( x_battery_start+1, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+0, y_battery_start,
+     zsupport( x_battery_start+1, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
-     zsupport( x_battery_start+40, y_battery_start,
-        z_battery_thold_top-5, z_battery_thold_top );
+     zsupport( x_battery_start+45, y_battery_start,
+        z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+40, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_bot+5 );
-
-     zsupport( x_battery_start+55, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_bot+5 );
+     zsupport( x_battery_start+45, y_battery_start,
+        z_battery_bhold_bot, z_battery_bhold_top );
 
      zsupport( x_battery_start+55, y_battery_start,
-        z_battery_bhold_top-5, z_battery_bhold_top );
+        z_battery_thold_bot, z_battery_thold_top );
+
+     zsupport( x_battery_start+55, y_battery_start,
+        z_battery_bhold_bot, z_battery_bhold_top );
 
 
      zsupport( x_battery_start+65, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
 
      zsupport( x_battery_start+65, y_battery_start,
+        z_battery_bhold_bot, z_battery_bhold_top );
+
+     zsupport( x_battery_start+75, y_battery_start,
+        z_battery_thold_bot, z_battery_thold_top );
+
+     zsupport( x_battery_start+75, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
          
      }
