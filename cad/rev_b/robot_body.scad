@@ -5,7 +5,7 @@ supports = 0;
 mocks = 0;
 shaft_mock = 0;
 robot_top = 0;
-robot_bot = 1;
+robot_bot = 0;
 magnet_shaft = 0;
 wheel = 0;
 motor_gear = 0;
@@ -20,6 +20,9 @@ d_bearing_608 = 22.5;
 m_shaft_to_back_holes = 31.8  - 11.2;
 m_shaft_to_front_hole = 2.5 + 11.2;
 m_shaft_duel_hole_gap = 17.5;
+m_distance_to_tab = 18.8/2-2.5/2;
+m_tab_clearance = 2.3;
+
 m_as5600_screw_gap = 17;
 m_as5600_outer_size = 23;
 m_as5600_wall_clearence = 1.5;
@@ -385,30 +388,30 @@ module holder_neg() {
     cylinder( d = d_bearing_608, h=bearing_608_height + epsilon );   
     translate([0, 0, z_lower_shaft_end - epsilon ] )
     cylinder( d = d_shaft_hole - epsilon, h=z_upper_start - z_lower_shaft_end + epsilon * 2 );    
-    translate([ x_left_hole, y_hole_down, z_motor_level - epsilon ] )
-    cylinder( d = d_m3, h=z_as5600_platform_holder - z_motor_level + epsilon * 2, $fn=20 );  
-    translate([ x_left_hole, y_hole_up, z_motor_level - epsilon ] )
-    cylinder( d = d_m3, h=z_as5600_platform_holder - z_motor_level + epsilon * 2, $fn=20 );      
-    translate([ x_right_hole, 0, z_motor_level - epsilon ] )
-    cylinder( d = d_m3, h=z_as5600_platform_holder - z_motor_level + epsilon * 2, $fn=20 );    
+ //   translate([ x_left_hole, y_hole_down, z_motor_level - epsilon ] )
+ //   cylinder( d = d_m3, h=z_as5600_platform_holder - z_motor_level + epsilon * 2, $fn=20 );  
+  //  translate([ x_left_hole, y_hole_up, z_motor_level - epsilon ] )
+   // cylinder( d = d_m3, h=z_as5600_platform_holder - z_motor_level + epsilon * 2, $fn=20 );      
+ //   translate([ x_right_hole, 0, z_motor_level - epsilon ] )
+  //  cylinder( d = d_m3, h=z_as5600_platform_holder - z_motor_level + epsilon * 2, $fn=20 );    
     
-    translate([ x_right_hole, 0, z_trap_down ] )
-    cylinder( d = m_trap_m3, h = z_trap_up - z_trap_down, $fn = 6 );    
-    negativez_box( x_right_hole,       x_right_corner+epsilon,
-                   -m_nut_m3/2,       m_nut_m3/2,
-                   z_trap_down, z_trap_up );
+  //  translate([ x_right_hole, 0, z_trap_down ] )
+ //   cylinder( d = m_trap_m3, h = z_trap_up - z_trap_down, $fn = 6 );    
+  //  negativez_box( x_right_hole,       x_right_corner+epsilon,
+ //                  -m_nut_m3/2,       m_nut_m3/2,
+ //                  z_trap_down, z_trap_up );
 
-    translate([ x_left_hole, y_hole_up, z_trap_down ] )
-    cylinder( d = m_trap_m3, h = z_trap_up - z_trap_down, $fn = 6 );    
-    negativez_box( x_left_corner-epsilon, x_left_hole,
-                   y_hole_up-m_nut_m3/2,  y_hole_up+m_nut_m3/2,
-                   z_trap_down, z_trap_up );
+  //  translate([ x_left_hole, y_hole_up, z_trap_down ] )
+ //   cylinder( d = m_trap_m3, h = z_trap_up - z_trap_down, $fn = 6 );    
+  //  negativez_box( x_left_corner-epsilon, x_left_hole,
+  //                 y_hole_up-m_nut_m3/2,  y_hole_up+//m_nut_m3/2,
+  //                 z_trap_down, z_trap_up );
 
-    translate([ x_left_hole, y_hole_down, z_trap_down ] )
-    cylinder( d = m_trap_m3, h = z_trap_up - z_trap_down, $fn = 6 );    
-    negativez_box( x_left_corner-epsilon, x_left_hole,
-                   y_hole_down-m_nut_m3/2,  y_hole_down+m_nut_m3/2,
-                   z_trap_down, z_trap_up );
+ //   translate([ x_left_hole, y_hole_down, z_trap_down ] )
+ //   cylinder( d = m_trap_m3, h = z_trap_up - z_trap_down, $fn = 6 );    
+ //   negativez_box( x_left_corner-epsilon, x_left_hole,
+ //                  y_hole_down-m_nut_m3/2,  y_hole_down+m_nut_m3/2,
+ //                  z_trap_down, z_trap_up );
     
     translate([x_as5600_platform_screw_left, y_as5600_platform_screw_up, z_as5600_platform_start - epsilon ] )   
     cylinder( d = d_m3, h= z_as5600_platform_holder - z_as5600_platform_start + epsilon * 2, $fn=20 ); 
@@ -919,24 +922,24 @@ module level2_pos() {
      zsupport( x_battery_start+45, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
-     zsupport( x_battery_start+55, y_battery_start,
+     zsupport( x_battery_start+54, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+55, y_battery_start,
+     zsupport( x_battery_start+54, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
 
-     zsupport( x_battery_start+65, y_battery_start,
+     zsupport( x_battery_start+63, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+65, y_battery_start,
+     zsupport( x_battery_start+63, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
-     zsupport( x_battery_start+75, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_top );
+//     zsupport( x_battery_start+75, y_battery_start,
+//        z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+75, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_top );
+//     zsupport( x_battery_start+75, y_battery_start,
+//        z_battery_bhold_bot, z_battery_bhold_top );
          
      }
          
@@ -1109,12 +1112,21 @@ module shaft_mock() {
 // max = 94mm diam
 
 x_motor_shaft = -40;
-y_motor_center = z_assembly_end - z_lower_shaft_end - 9;
-y_motor_end = y_motor_center - 9;
+y_motor_center = z_assembly_end - z_lower_shaft_end - 9+.4;
+y_motor_end = y_motor_center - 9-.4;
 y_motor_start = -y_motor_end;
-x_front_holes = x_motor_shaft - m_shaft_to_back_holes;
-x_l_motor_support = x_front_holes - assembly_wall;
-x_r_motor_support = x_front_holes + assembly_wall;
+x_back_holes = x_motor_shaft - m_shaft_to_back_holes;
+x_front_hole = x_motor_shaft + m_shaft_to_front_hole;
+x_l_motor_support = x_back_holes - assembly_wall;
+x_r_motor_support = x_back_holes + assembly_wall;
+x_l_fmotor_support = x_front_hole - assembly_wall;
+x_r_fmotor_support = x_front_hole + assembly_wall;
+y_u_fmotor_support = -22;
+y_l_fmotor_support = -y_u_fmotor_support;
+
+y_tab_start = y_motor_start - m_distance_to_tab;
+y_tab_end = y_motor_end + m_distance_to_tab;
+x_l_fmotor_tab = x_front_hole - m_tab_clearance;
 
 z_hole_down = - m_shaft_duel_hole_gap / 2;
 z_hole_up   = + m_shaft_duel_hole_gap / 2;
@@ -1129,6 +1141,27 @@ module motor_support_pos() {
             [ x_r_motor_support, y_motor_end ],
             [ x_l_motor_support, y_motor_end ]]);
     }
+    translate([0,0, z_motor_sup_down ] ) {
+        linear_extrude( z_motor_sup_up - z_motor_sup_down ) polygon([
+            [ x_l_fmotor_support, y_l_fmotor_support ],
+            [ x_r_fmotor_support, y_l_fmotor_support ],
+            [ x_r_fmotor_support, y_motor_end ],
+            [ x_l_fmotor_support, y_motor_end ]]);
+    }    
+    translate([0,0, z_motor_sup_down ] ) {
+        linear_extrude( z_motor_sup_up - z_motor_sup_down ) polygon([
+            [ x_l_fmotor_support, y_u_fmotor_support ],
+            [ x_r_fmotor_support, y_u_fmotor_support ],
+            [ x_r_fmotor_support, y_motor_start ],
+            [ x_l_fmotor_support, y_motor_start ]]);
+    }     
+    translate([0,0, z_motor_sup_down ] ) {
+        linear_extrude( z_motor_sup_up - z_motor_sup_down ) polygon([
+            [ x_l_fmotor_tab, y_u_fmotor_support ],
+            [ x_r_fmotor_support, y_u_fmotor_support ],
+            [ x_r_fmotor_support, y_tab_start ],
+            [ x_l_fmotor_tab, y_tab_start ]]);
+    }     
 }
 
 module x_cylinder( rad, height, fn ) {
@@ -1147,16 +1180,22 @@ module x_nut_trap( x, y, z ) {
 }
 
 module motor_support_neg() {
-    translate([ x_front_holes, y_motor_start - epsilon, z_hole_down ] )
+    translate([ x_back_holes, y_motor_start - epsilon, z_hole_down ] )
     x_cylinder( d_m3/2, y_motor_end - y_motor_start + epsilon*2, 20 );
-    translate([ x_front_holes, y_motor_start - epsilon, z_hole_up ] )
+    translate([ x_back_holes, y_motor_start - epsilon, z_hole_up ] )
     x_cylinder( d_m3/2, y_motor_end - y_motor_start + epsilon*2, 20 );
+    translate([ x_front_hole, y_tab_start - epsilon, 0 ] )
+    x_cylinder( d_m3/2, y_tab_end - y_tab_start + epsilon*2, 20 );    
     
-    x_nut_trap( x_front_holes, y_motor_start + 5, z_hole_up );
-    x_nut_trap( x_front_holes, y_motor_start + 5, z_hole_down );
-    x_nut_trap( x_front_holes, y_motor_end - 5 - (z_trap_up - z_trap_down), z_hole_up );
-    x_nut_trap( x_front_holes, y_motor_end - 5- (z_trap_up - z_trap_down), z_hole_down );;
+    x_nut_trap( x_back_holes, y_motor_start + 5, z_hole_up );
+    x_nut_trap( x_back_holes, y_motor_start + 5, z_hole_down );
+    x_nut_trap( x_back_holes, y_motor_end - 5 - (z_trap_up - z_trap_down), z_hole_up );
+    x_nut_trap( x_back_holes, y_motor_end - 5- (z_trap_up - z_trap_down), z_hole_down );;
         ball_neg();    
+    x_nut_trap( x_front_hole, y_motor_end - 5- (z_trap_up - z_trap_down), 0 );;
+    x_nut_trap( x_front_hole, y_motor_start + 5, 0 );    
+    
+        ball_neg();     
 }
 
 module motor_support() {
@@ -1371,3 +1410,15 @@ if ( mocks ) {
 //battery_mock();
 //cap();
 
+/*
+intersection() {
+    lower_body();
+    translate([0,0,-50])
+    linear_extrude( 100 ) polygon( [
+        [ -20, -8],
+        [ -20, -60 ],
+        [ -67, -60 ],
+        [ -67, -8 ] ] );
+}
+*/  
+    
