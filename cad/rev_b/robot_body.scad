@@ -1,14 +1,15 @@
 bearing_608_height = 6.8;
 epsilon = .001;
 
-supports = 0;
+supports = 1;
 mocks = 0;
 shaft_mock = 0;
-robot_top = 0;
-robot_bot = 0;
+robot_top = 1;
+robot_bot = 1;
 magnet_shaft = 0;
 wheel = 0;
 motor_gear = 0;
+test = 0;
 
 d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
@@ -700,6 +701,7 @@ z_circuit_bot = -92/2;
 z_circuit_top = 92/2;
 holder_width = 3;
 y_battery_start = y_up_corner;
+y_holder_start = y_battery_start - 2;
 y_battery_end = y_battery_start + battery_height+.5;
 z_battery_bhold_top = -battery_width/2 - .5;
 //z_battery_bhold_bot = z_battery_bhold_top - holder_width;
@@ -772,6 +774,11 @@ x_fled4_end = x_fled4_start - m_led_size - m_led_wiggle*2;
 x_fled5_start = x_fled4_start - m_led_to_led;
 x_fled5_end = x_fled4_end - m_led_to_led;
 
+x_fled6_start = x_fled5_start - m_led_to_led;
+x_fled6_end = x_fled5_end - m_led_to_led;
+
+x_fled_start = x_fled6_end - 8;
+
 module screw_pos(x,z)
 {
     translate([x, y_circuit_support_top, z ] )
@@ -832,6 +839,13 @@ module level2_pos() {
              z_battery_bhold_bot, z_battery_bhold_top );
     
     // Makes sure battery doesn't slide forward
+    echo(["gap", x_battery_hold_end-x_battery_end]);
+    for ( y = [0 : .2 : 2.8 ] ) {
+    pos_box( x_battery_end+3-y-.2, x_battery_end+3,
+             y_battery_start + y-3, y_battery_start + y+.2-3,
+             z_battery_bhold_bot, z_battery_thold_top );        
+    }
+    
     pos_box( x_battery_end, x_battery_hold_end,
              y_battery_start, y_circuit_support_top,
              z_battery_bhold_bot, z_battery_thold_top );   
@@ -839,15 +853,25 @@ module level2_pos() {
     // Front LED holder
     pos_box( x_led_holder_start, x_led_holder_end,
              y_battery_start, y_led_end,
-             z_led_bot_wall_start, z_led_top_wall_end );     
+             z_led_bot_wall_start, z_led_top_wall_end );
 
-    pos_box( x_led_holder_start, x_fled5_start,
+    // Side LED holder
+    pos_box( x_led_holder_start, x_fled_start,
              y_battery_start, y_led_end,
              z_led_bot_wall_start, z_led_bot_gap_start);
+    pos_box( x_led_holder_start, x_fled_start-4,
+             y_holder_start, y_battery_start+epsilon,
+             z_led_bot_wall_start, z_battery_bhold_top);
 
-    pos_box( x_led_holder_start, x_fled5_start,
+    pos_box( x_led_holder_start, x_fled_start,
              y_battery_start, y_led_end,
              z_led_top_gap_end, z_led_top_wall_end );
+    pos_box( x_led_holder_start, x_fled_start-4,
+             y_holder_start, y_battery_start+epsilon,
+             z_battery_thold_bot, z_led_top_wall_end);
+
+
+    // overhead battery supports
     
     pos_box( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot, y_circuit_support_top,
@@ -892,11 +916,11 @@ module level2_pos() {
 
 
 
-     zsupport( x_battery_start+28, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_top );
+     zsupport( x_battery_start+28, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top + 5 );
 
-     zsupport( x_battery_start+28, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_top );
+     zsupport( x_battery_start+28, y_holder_start,
+        z_battery_bhold_bot - 5, z_battery_bhold_top );
 
      zsupport( x_battery_start+20, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
@@ -916,24 +940,24 @@ module level2_pos() {
      zsupport( x_battery_start+1, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
-     zsupport( x_battery_start+45, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_top );
+     zsupport( x_battery_start+45, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top +5 );
 
-     zsupport( x_battery_start+45, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_top );
+     zsupport( x_battery_start+45, y_holder_start,
+        z_battery_bhold_bot -5, z_battery_bhold_top );
 
-     zsupport( x_battery_start+54, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_top );
+     zsupport( x_battery_start+54, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top +5 );
 
-     zsupport( x_battery_start+54, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_top );
+     zsupport( x_battery_start+54, y_holder_start,
+        z_battery_bhold_bot - 5, z_battery_bhold_top );
 
 
-     zsupport( x_battery_start+63, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_top );
+     zsupport( x_battery_start+63, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top + 5 );
 
-     zsupport( x_battery_start+63, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_top );
+     zsupport( x_battery_start+63, y_holder_start,
+        z_battery_bhold_bot - 5, z_battery_bhold_top );
 
 //     zsupport( x_battery_start+75, y_battery_start,
 //        z_battery_thold_bot, z_battery_thold_top );
@@ -983,6 +1007,15 @@ module level2_neg() {
     pos_box( x_fled5_start, x_fled5_end,
          y_battery_start, y_circuit_support_top + epsilon,
          z_led_top_gap_end - epsilon, z_led_top_wall_end + epsilon  );         
+
+
+    pos_box( x_fled6_start, x_fled6_end,
+         y_battery_start, y_circuit_support_top + epsilon,
+         z_led_bot_wall_start - epsilon, z_led_bot_gap_start + epsilon );    
+    
+    pos_box( x_fled6_start, x_fled6_end,
+         y_battery_start, y_circuit_support_top + epsilon,
+         z_led_top_gap_end - epsilon, z_led_top_wall_end + epsilon  );     
     
 }
 
@@ -1410,15 +1443,26 @@ if ( mocks ) {
 //battery_mock();
 //cap();
 
-/*
+//lower_body();
+
+if( test ) {
 intersection() {
     lower_body();
-    translate([0,0,-50])
-    linear_extrude( 100 ) polygon( [
-        [ -20, -8],
-        [ -20, -60 ],
-        [ -67, -60 ],
-        [ -67, -8 ] ] );
+    union() {
+    translate([0,0,12.8])
+    difference() {
+        linear_extrude( 16 ) polygon( [
+            [  18, 52 ],
+            [  18, -52*0 ],
+            [ -70, -52*0 ],
+            [ -70, 52 ] ] );
+        translate([0,0,-1])
+        linear_extrude( 18 ) polygon( [
+            [  10, 40],
+            [  10, -40 ],
+            [ -95, -40 ],
+            [ -95, 40 ] ] );        
+        }
+    }
 }
-*/  
-    
+}
