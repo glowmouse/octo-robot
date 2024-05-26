@@ -23,9 +23,12 @@
 
 teeth_2 = 72;			// Number of teeth, standard Mendel T5 belt = 8, gives Outside Diameter of 11.88mm
 teeth_1 = 32;			// Number of teeth, standard Mendel T5 belt = 8, gives Outside Diameter of 11.88mm
+teeth_1 = 32;			// Number of teeth, standard Mendel T5 belt = 8, gives Outside Diameter of 11.88mm
+teeth_1 = 40;			// Number of teeth, standard Mendel T5 belt = 8, gives Outside Diameter of 11.88mm
+teeth_1 = 46;			// Number of teeth, standard Mendel T5 belt = 8, gives Outside Diameter of 11.88mm
 profile = 12;		// 1=MXL 2=40DP 3=XL 4=H 5=T2.5 6=T5 7=T10 8=AT5 9=HTD_3mm 10=HTD_5mm 11=HTD_8mm 12=GT2_2mm 13=GT2_3mm 14=GT2_5mm
 
-motor_shaft_1 = 5.4;	// NEMA17 motor shaft exact diameter = 5
+motor_shaft_1 = 5.5;	// NEMA17 motor shaft exact diameter = 5
 motor_shaft_2 = 10;
 m3_dia = 3.4;		// 3mm hole diameter
 m3_nut_hex = 1;		// 1 for hex, 0 for square nut
@@ -38,7 +41,7 @@ idler = 0;			// Belt retainer below teeth, 0 = No, 1 = Yes
 idler_ht = 1.5;		// height of idler flange over pulley, standard = 1.5
 
 pulley_t_ht = 10;	// length of toothed part of pulley, standard = 12
-pulley_b_ht_1 = 12;		// pulley base height, standard = 8. Set to same as idler_ht if you want an idler but no pulley.
+pulley_b_ht_1 = 10;		// pulley base height, standard = 8. Set to same as idler_ht if you want an idler but no pulley.
 pulley_b_ht_2 = 0;		// pulley base height, standard = 8. Set to same as idler_ht if you want an idler but no pulley.
 pulley_b_dia = 20;	// pulley base diameter, standard = 20
 no_of_nuts = 1;		// number of captive nuts required, standard = 1

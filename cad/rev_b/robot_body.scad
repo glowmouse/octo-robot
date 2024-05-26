@@ -15,7 +15,8 @@ d_diag_magnet_diam = 5.4;
 d_axial_magnet_diam = 5.5;
 m_axial_magnet_width = 3;
 d_motor_shaft = 5.3;
-d_shaft = 8.10;
+d_shaft = 8.05;
+d_shaft = 8.00;
 d_m3 = 3.5;
 d_bearing_608 = 22.5;
 m_shaft_to_back_holes = 31.8  - 11.2;
@@ -92,7 +93,7 @@ z_cap_bot = z_motor_level + 0;
 z_toy_motor_shaft_top = z_motor_level + 10;
 z_shaft_start = z_motor_level;
 z_lower_shaft_end = z_motor_level + 22;
-z_real_shaft_end = z_lower_shaft_end - 1.0;
+z_real_shaft_end = z_lower_shaft_end - 1.5;
 z_upper_start = z_lower_shaft_end + bearing_608_height * 2 + m_bearing_holder_gap;
 
 //z_shaft_end = z_lower_shaft_end + 5;
@@ -590,7 +591,7 @@ module pingpong_holder_neg()
 }
 
 holder_tri_angle = 40;
-m_to_center = 31;
+m_to_center = 33;
 echo(["m_to_center", m_to_center]);
 m_to_back = m_to_center / tan(holder_tri_angle/2);
 
@@ -725,7 +726,7 @@ y_circuit_support_bot = y_battery_end;
 y_circuit_support_top = y_circuit_support_bot + 5;
 y_circuit_mount_top = y_circuit_support_top + 3;
 
-x_circuit_lsupport_s = -45;
+x_circuit_lsupport_s = -50;
 x_circuit_lsupport_e = x_circuit_lsupport_s + circuit_support_width;
 x_circuit_rsupport_e = m_circuit_board_width/2 + circuit_support_offset;
 x_circuit_rsupport_s = x_circuit_rsupport_e - circuit_support_width;
@@ -859,14 +860,14 @@ module level2_pos() {
     pos_box( x_led_holder_start, x_fled_start,
              y_battery_start, y_led_end,
              z_led_bot_wall_start, z_led_bot_gap_start);
-    pos_box( x_led_holder_start, x_fled_start-4,
+    pos_box( x_led_holder_start, x_fled_start-9,
              y_holder_start, y_battery_start+epsilon,
              z_led_bot_wall_start, z_battery_bhold_top);
 
     pos_box( x_led_holder_start, x_fled_start,
              y_battery_start, y_led_end,
              z_led_top_gap_end, z_led_top_wall_end );
-    pos_box( x_led_holder_start, x_fled_start-4,
+    pos_box( x_led_holder_start, x_fled_start-9,
              y_holder_start, y_battery_start+epsilon,
              z_battery_thold_bot, z_led_top_wall_end);
 
@@ -887,7 +888,7 @@ module level2_pos() {
              -25);
     xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
-             -12);
+             -10);
      xsupport( x_circuit_lsupport_s, x_circuit_lsupport_e,
              y_circuit_support_bot,
              0);                        
@@ -914,24 +915,22 @@ module level2_pos() {
              y_circuit_support_bot,
              20);               
 
-
-
-     zsupport( x_battery_start+28, y_holder_start,
+     zsupport( x_battery_start+23, y_holder_start,
         z_battery_thold_bot, z_battery_thold_top + 5 );
 
-     zsupport( x_battery_start+28, y_holder_start,
+     zsupport( x_battery_start+23, y_holder_start,
         z_battery_bhold_bot - 5, z_battery_bhold_top );
 
-     zsupport( x_battery_start+20, y_battery_start,
+//     zsupport( x_battery_start+20, y_battery_start,
+ //       z_battery_thold_bot, z_battery_thold_top );
+
+ //    zsupport( x_battery_start+20, y_battery_start,
+   //     z_battery_bhold_bot, z_battery_bhold_top );
+
+     zsupport( x_battery_start+12, y_battery_start,
         z_battery_thold_bot, z_battery_thold_top );
 
-     zsupport( x_battery_start+20, y_battery_start,
-        z_battery_bhold_bot, z_battery_bhold_top );
-
-     zsupport( x_battery_start+10, y_battery_start,
-        z_battery_thold_bot, z_battery_thold_top );
-
-     zsupport( x_battery_start+10, y_battery_start,
+     zsupport( x_battery_start+12, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
      zsupport( x_battery_start+1, y_battery_start,
@@ -940,24 +939,30 @@ module level2_pos() {
      zsupport( x_battery_start+1, y_battery_start,
         z_battery_bhold_bot, z_battery_bhold_top );
 
-     zsupport( x_battery_start+45, y_holder_start,
-        z_battery_thold_bot, z_battery_thold_top +5 );
+     zsupport( x_battery_start+39, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top + 5);
 
-     zsupport( x_battery_start+45, y_holder_start,
-        z_battery_bhold_bot -5, z_battery_bhold_top );
-
-     zsupport( x_battery_start+54, y_holder_start,
-        z_battery_thold_bot, z_battery_thold_top +5 );
-
-     zsupport( x_battery_start+54, y_holder_start,
+     zsupport( x_battery_start+39, y_holder_start,
         z_battery_bhold_bot - 5, z_battery_bhold_top );
 
-
-     zsupport( x_battery_start+63, y_holder_start,
+     zsupport( x_battery_start+49, y_holder_start,
         z_battery_thold_bot, z_battery_thold_top + 5 );
 
-     zsupport( x_battery_start+63, y_holder_start,
+     zsupport( x_battery_start+49, y_holder_start,
+        z_battery_bhold_bot - 5, z_battery_bhold_top );        
+        
+     zsupport( x_battery_start+58, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top  + 5);
+
+     zsupport( x_battery_start+58, y_holder_start,
         z_battery_bhold_bot - 5, z_battery_bhold_top );
+
+
+     zsupport( x_battery_start+73, y_holder_start,
+        z_battery_thold_bot, z_battery_thold_top + 5);
+
+     zsupport( x_battery_start+73, y_holder_start,
+        z_battery_bhold_bot- 5, z_battery_bhold_top );
 
 //     zsupport( x_battery_start+75, y_battery_start,
 //        z_battery_thold_bot, z_battery_thold_top );
@@ -1144,7 +1149,7 @@ module shaft_mock() {
 // gear = 15mm rad max
 // max = 94mm diam
 
-x_motor_shaft = -40;
+x_motor_shaft = -45;
 y_motor_center = z_assembly_end - z_lower_shaft_end - 9+.4;
 y_motor_end = y_motor_center - 9-.4;
 y_motor_start = -y_motor_end;
@@ -1429,6 +1434,7 @@ if ( wheel ) {
 }
 
 if ( motor_gear ) {
+    rotate(180,[1,0,0])
     motor_pulley();
 }
 
